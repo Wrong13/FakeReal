@@ -104,13 +104,12 @@ class NewsClassifier:
 
     def predict(self, text):
         
-        text_vec = self.vectorizer.transform([text])  # Обратите внимание на квадратные скобки!
+        text_vec = self.vectorizer.transform([text])  
         
         prediction = self.model.predict(text_vec)
         return 'Ложь' if prediction[0] else 'Так и есть'
     
     def partial_fit(self, X_new, y_new):
-        #processed_texts = [self._preprocess_text(text) for text in X_new]
         X_vec = self.vectorizer.transform(X_new)
         self.model.partial_fit(X_vec, y_new, classes=self.model.classes_)
         print(f"Модель обновлена на {len(X_new)} примерах")
