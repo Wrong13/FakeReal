@@ -16,7 +16,7 @@ import joblib
 import OnlineClassifer
 
 def main():
-    s = 0
+    s = 3
     if s == 0:
         classifer = OnlineClassifer.NewsClassifier.load_model()
 
@@ -61,6 +61,7 @@ def main():
         df2 = pd.DataFrame(df2)
         
         rezultdf = pd.concat([df,df2],ignore_index=True)
+        rezultdf = rezultdf.sample(frac=1).reset_index(drop=True)
         classifier = OnlineClassifer.NewsClassifier() 
         accuracy = classifier.first_train(
             df=rezultdf,
