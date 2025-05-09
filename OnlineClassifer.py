@@ -35,6 +35,8 @@ class NewsClassifier:
         self.stopwords = set(stopwords.words('russian')).union(
             {'это', 'который', 'весь', 'такой', 'свой', 'наш', 'ваш', 'их'}
         )
+        df = df.copy()  
+        df['title'] = df['title'].fillna('')
         
         X = df['title']
         y = df['is_fake']
@@ -55,7 +57,7 @@ class NewsClassifier:
         self.model = PassiveAggressiveClassifier(
             random_state=42,
             early_stopping=True,
-            max_iter=1000
+            max_iter=5000
         )
         self.model.fit(X_train_vec, y_train)
         
@@ -104,13 +106,13 @@ class NewsClassifier:
 
     def predict(self, text):
         
-        text_vec = self.vectorizer.transform([text])  # Обратите внимание на квадратные скобки!
+        text_vec = self.vectorizer.transform([text])  
         
         prediction = self.model.predict(text_vec)
+        print(prediction[0])
         return 'Ложь' if prediction[0] else 'Так и есть'
     
     def partial_fit(self, X_new, y_new):
-        #processed_texts = [self._preprocess_text(text) for text in X_new]
         X_vec = self.vectorizer.transform(X_new)
         self.model.partial_fit(X_vec, y_new, classes=self.model.classes_)
         print(f"Модель обновлена на {len(X_new)} примерах")

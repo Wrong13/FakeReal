@@ -37,7 +37,7 @@ def main():
         )
 
         print(f"Точность модели: {accuracy:.2f}")
-    if s == 2:
+    elif s == 2:
         src_path = Path(__file__).parent / "src"
         src_path.mkdir(exist_ok=True)
         df = pd.read_csv("src\\MyData.csv",encoding='cp1251')
@@ -48,6 +48,26 @@ def main():
         )
 
         print(f"Точность модели: {accuracy:.2f}")
+    elif s==3:
+        df = pd.read_csv("src\\translated_parallel.csv")[:1200]
+        df = df.drop(0, axis=0).reset_index(drop=True)
+        df = pd.DataFrame(df)
+        df['is_fake'] = 1
+        df.columns = ['title','is_fake']
+        df2 = pd.read_csv("src\\translated_parallel_True.csv")[:1200]
+        df2 = df2.drop(0, axis=0).reset_index(drop=True)
+        df2['is_fake'] = 0
+        df2.columns = ['title','is_fake']
+        df2 = pd.DataFrame(df2)
+        
+        rezultdf = pd.concat([df,df2],ignore_index=True)
+        classifier = OnlineClassifer.NewsClassifier() 
+        accuracy = classifier.first_train(
+            df=rezultdf,
+            save_path="src\\fake_news_model2.mdl"  
+        )
+
+        print(f"Точность модели: {accuracy:.6f}")
 
 if __name__ == '__main__':
     main()
